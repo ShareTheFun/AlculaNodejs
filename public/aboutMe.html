@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Matt Albert Portfolio - About Me</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, .container, header, .about, footer, h1, h2, h3, p, ul, li {
+            -webkit-user-select: none; /* Safari */
+            -moz-user-select: none;    /* Firefox */
+            -ms-user-select: none;     /* Internet Explorer/Edge */
+            user-select: none;         /* Non-prefixed version */
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f8fb;
+            color: #333;
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            height: 100vh;
+            overflow-y: auto; /* Allow vertical scrolling */
+            overflow-x: hidden; /* Disable horizontal scrolling */
+            animation: fadeIn 1s ease-out;
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            text-align: center;
+            animation: slideIn 0.8s ease-out;
+            margin-top: 20px; /* Add top margin to avoid sticking to top */
+        }
+
+        @keyframes slideIn {
+            0% {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        header {
+            margin-bottom: 20px;
+            animation: slideIn 0.6s ease-out;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .profile-img {
+            width: 140px;  /* Increased profile image size */
+            height: 140px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: transform 0.4s ease, box-shadow 0.4s ease, border-radius 0.4s ease;
+            display: inline-block;
+        }
+
+        /* Full screen image when zoomed */
+        .profile-img.zoomed {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(1.5); /* Scaling to 1.5 times */
+            max-width: 90%; /* Ensures the image fits inside the viewport */
+            max-height: 90%; /* Keeps it from overflowing */
+            z-index: 1000;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+            cursor: zoom-out;
+            border-radius: 0%; /* Remove circle shape */
+            object-fit: contain; /* Ensures the image maintains its aspect ratio */
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #1e90ff;
+            margin-bottom: 15px;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            0% {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .about {
+            margin-bottom: 30px;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: #1e90ff;
+            margin-bottom: 10px;
+        }
+
+        .highlight {
+            color: #1e90ff;
+            font-weight: bold;
+        }
+
+        footer {
+            background-color: #1e90ff;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        footer p {
+            font-size: 1rem;
+        }
+
+        /* Facebook and Email Link Style - Circular */
+        .social-logo {
+            display: inline-block;
+            background-color: #3b5998;
+            color: white;
+            width: 40px; /* Smaller size for the buttons */
+            height: 40px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            font-size: 1.5rem;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .social-logo:hover {
+            background-color: #2d4373;
+        }
+
+        /* Back to Home Button Style */
+        .btn {
+            display: inline-block;
+            background-color: #1e90ff;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn:hover {
+            background-color: #1177cc;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+
+            .profile-img {
+                width: 100px;
+                height: 100px;
+            }
+
+            .container {
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 1.8rem;
+            }
+
+            .profile-img {
+                width: 80px;
+                height: 80px;
+            }
+
+            footer p {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <!-- Facebook Logo -->
+            <a href="https://www.facebook.com/matt.albert.acula.2024" target="_blank">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUmU7hDyKnbQvE2TU2XrWVgYOocdPl4w29Rkx8YxjdNgU0FXIwdgcUqsTR&s=10" alt="Facebook Logo" class="social-logo">
+            </a>
+
+            <!-- Email Logo -->
+            <a href="mailto:aculamatt2008@gmail.com">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTKAhDGfzUyDMLB7aZ3Fy5X2JKZuSAhlfE7Q&usqp=CAU" alt="Email Logo" class="social-logo">
+            </a>
+
+            <!-- Profile Image -->
+            <img src="acula.jpg" alt="Acula Image" class="profile-img" id="profileImage">
+        </header>
+
+        <!-- About Me Section -->
+        <section class="about">
+            <h2>About Me</h2>
+            <p>Hi! My name is <strong>Matt Albert Acula</strong>. I am a <strong>cheerful</strong> and <strong>joking</strong> individual, and I enjoy singing.</p>
+            <h3>Additional Information</h3>
+            <ul style="text-align: left;">
+                <li><strong>Age:</strong> 16</li>
+                <li><strong>Birthday:</strong> September 27, 2008</li>
+                <li><strong>Favorite Color:</strong> Blue</li>
+                <li><strong>Hobby:</strong> Singing</li>
+                <li><strong>Aspiring to be:</strong> Minister of Iglesia ni Cristo</li>
+            </ul>
+        </section>
+
+        <!-- Back to Home Button -->
+        <section>
+            <a href="index.html" class="btn">Back to Home</a>
+        </section>
+
+        <footer>
+            <p>Created with passion and dedication!</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const profileImage = document.getElementById('profileImage');
+            profileImage.addEventListener('click', () => {
+                profileImage.classList.toggle('zoomed');
+            });
+        });
+    </script>
+</body>
+</html>

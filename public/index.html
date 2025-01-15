@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Matt Albert Portfolio</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f8fb;
+            color: #333;
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            height: 100%;
+            width: 100%;
+            overflow-x: hidden; /* Disable horizontal scroll */
+            animation: fadeIn 1s ease-out;
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            text-align: center;
+            animation: slideIn 0.8s ease-out;
+            overflow: hidden;
+        }
+
+        @keyframes slideIn {
+            0% {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        header {
+            margin-bottom: 20px;
+            animation: slideIn 0.6s ease-out;
+        }
+
+        .profile-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: transform 0.4s ease, box-shadow 0.4s ease, border-radius 0.4s ease;
+            display: inline-block;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #1e90ff;
+            margin-bottom: 15px;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            0% {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .info {
+            font-size: 1.2rem;
+            margin-top: 20px;
+            color: #333;
+        }
+
+        .info .icon {
+            font-size: 2rem;
+            margin-right: 10px;
+            color: #1e90ff;
+        }
+
+        footer {
+            background-color: #1e90ff;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        footer p {
+            font-size: 1rem;
+        }
+
+        /* Button Style */
+        .btn {
+            display: inline-block;
+            background-color: #1e90ff;
+            color: white;
+            padding: 12px 24px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin: 10px; /* Space between buttons */
+        }
+
+        .btn:hover {
+            background-color: #4682b4;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+
+            .profile-img {
+                width: 100px;
+                height: 100px;
+            }
+
+            .container {
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 1.8rem;
+            }
+
+            .profile-img {
+                width: 80px;
+                height: 80px;
+            }
+
+            footer p {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <img src="acula.jpg" alt="Acula Image" class="profile-img" id="profileImage">
+            <h1>Matt Albert Portfolio</h1>
+        </header>
+
+        <!-- Information Section -->
+        <section class="info">
+            <p><i class="fas fa-clock icon"></i><strong>Current Time (Asia/Manila):</strong> <span id="time"></span></p>
+            <p><i class="fas fa-battery-half icon"></i><strong>Battery Level:</strong> <span id="battery"></span></p>
+            <p><i class="fas fa-network-wired icon"></i><strong>Your IP Address:</strong> <span id="ip"></span></p>
+            <p><i class="fas fa-map-marker-alt icon"></i><strong>City:</strong> <span id="city"></span></p>
+            <p><i class="fas fa-map-signs icon"></i><strong>Region:</strong> <span id="region"></span></p>
+            <p><i class="fas fa-flag icon"></i><strong>Country:</strong> <span id="country"></span></p>
+            <p><strong>Location:</strong> <span id="location"></span></p>
+            <p><strong>Organization:</strong> <span id="org"></span></p>
+            <p><strong>Postal Code:</strong> <span id="postal"></span></p>
+            <p><strong>Timezone:</strong> <span id="timezone"></span></p>
+        </section>
+
+        <!-- Buttons Section -->
+        <section class="about">
+            <h2>Explore More</h2>
+            <a href="aboutMe.html" class="btn">About Me</a>
+            <a href="confession.html" class="btn">Confess to me?</a>
+        </section>
+
+        <footer>
+            <p>Created with passion and dedication!</p>
+        </footer>
+    </div>
+
+    <script>
+        // Show Current Time (Asia/Manila)
+        function updateTime() {
+            const options = {
+                timeZone: 'Asia/Manila',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: true,
+            };
+            const time = new Date().toLocaleTimeString('en-US', options);
+            document.getElementById('time').textContent = time;
+        }
+
+        setInterval(updateTime, 1000); // Update every second
+
+        // Show Battery Level
+        navigator.getBattery().then(function(battery) {
+            function updateBatteryStatus() {
+                const batteryLevel = (battery.level * 100).toFixed(0) + '%';
+                document.getElementById('battery').textContent = batteryLevel;
+            }
+
+            updateBatteryStatus(); // Initial battery status
+            battery.addEventListener('levelchange', updateBatteryStatus); // Update on level change
+        });
+
+        // Fetch User IP and Other Details
+        fetch('https://ipinfo.io?token=cc346d65988b46') // Token added here
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('ip').textContent = data.ip;
+                document.getElementById('city').textContent = data.city;
+                document.getElementById('region').textContent = data.region;
+                document.getElementById('country').textContent = data.country;
+                document.getElementById('location').textContent = data.loc;
+                document.getElementById('org').textContent = data.org;
+                document.getElementById('postal').textContent = data.postal;
+                document.getElementById('timezone').textContent = data.timezone;
+            })
+            .catch(error => {
+                document.getElementById('ip').textContent = 'Unable to fetch IP';
+            });
+
+        // Zoom profile image on click
+        document.addEventListener('DOMContentLoaded', () => {
+            const profileImage = document.getElementById('profileImage');
+            profileImage.addEventListener('click', () => {
+                profileImage.classList.toggle('zoomed');
+            });
+        });
+    </script>
+</body>
+</html>

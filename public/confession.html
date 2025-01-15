@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Confess to Me</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7fa;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            height: 100vh;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            color: #1e90ff;
+            font-size: 2.5rem;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        #confessBtn, #backBtn {
+            background-color: #1e90ff;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        #confessBtn:hover, #backBtn:hover {
+            background-color: #4682b4;
+        }
+
+        /* Confession Form Styles */
+        .popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .popup-form {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 400px;
+            text-align: left;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .popup-form h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        input, textarea, button {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        button {
+            background-color: #1e90ff;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #4682b4;
+        }
+
+        /* Close button for the popup */
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            background: none;
+            border: none;
+            color: #333;
+            cursor: pointer;
+        }
+
+        /* Confessions List Styles */
+        #confessionList {
+            width: 100%;
+            max-width: 800px;
+            margin-top: 30px;
+            padding: 0 15px;
+        }
+
+        .confession-item {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .confession-item strong {
+            font-size: 1.1rem;
+            color: #1e90ff;
+        }
+
+        .timer {
+            font-size: 0.9rem;
+            color: gray;
+        }
+
+        /* Mobile Responsiveness */
+        @media screen and (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .popup-form {
+                padding: 15px;
+                width: 80%;
+                max-width: 350px;
+            }
+
+            #confessBtn, #backBtn {
+                padding: 10px 25px;
+            }
+
+            .confession-item {
+                padding: 15px;
+            }
+
+            .close-btn {
+                font-size: 22px;
+                top: 10px;
+                right: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Confess to Me</h1>
+    <button id="confessBtn">Confess Now</button>
+
+    <!-- Confession Popup -->
+    <div class="popup" id="popupForm">
+        <div class="popup-form">
+            <button class="close-btn" id="closePopup">&times;</button>
+            <h3>Your Confession</h3>
+            <input type="text" id="userName" placeholder="Your Name (Optional)">
+            <textarea id="confessionText" placeholder="What do you want to say?" rows="4"></textarea>
+            <button id="submitConfession">Submit Confession</button>
+            <p id="confessionLimit" style="color: red;"></p>
+        </div>
+    </div>
+
+    <!-- Confessions Display -->
+    <div id="confessionList"></div>
+
+    <!-- Back Button -->
+    <button id="backBtn">Back to Home</button>
+
+    <script>
+        let confessionsToday = 0; // Track the number of confessions today
+        const maxConfessionsPerDay = 3; // Maximum allowed confessions per day
+
+        // Show confession form when the button is clicked
+        document.getElementById('confessBtn').addEventListener('click', () => {
+            // Check if user has already submitted 3 confessions today
+            if (confessionsToday >= maxConfessionsPerDay) {
+                document.getElementById('confessionLimit').textContent = 'You can only submit 3 confessions per day.';
+            } else {
+                document.getElementById('popupForm').style.display = 'flex';
+            }
+        });
+
+        // Close the popup when the close button is clicked
+        document.getElementById('closePopup').addEventListener('click', () => {
+            document.getElementById('popupForm').style.display = 'none';
+        });
+
+        // Submit confession and save as a JSON file
+        document.getElementById('submitConfession').addEventListener('click', () => {
+            const userName = document.getElementById('userName').value || 'Anonymous' + Math.floor(Math.random() * 1000);
+            const confessionText = document.getElementById('confessionText').value.trim();
+
+            if (confessionText !== '') {
+                const timestamp = new Date().toISOString(); // Get the current timestamp
+
+                // Create confession object with timestamp
+                const confession = {
+                    userName: userName,
+                    confessionText: confessionText,
+                    timestamp: timestamp
+                };
+
+                // Send confession data to the server
+                fetch('/save-confession', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(confession)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Confession saved:', data);
+                    confessionsToday++; // Increment confession count for the day
+                    displayConfessions(); // Refresh the confessions list
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+
+                // Clear the form and close popup
+                document.getElementById('userName').value = '';
+                document.getElementById('confessionText').value = '';
+                document.getElementById('popupForm').style.display = 'none';
+                document.getElementById('confessionLimit').textContent = ''; // Clear error message
+            } else {
+                alert('Please enter a confession.');
+            }
+        });
+
+        // Display all confessions
+        function displayConfessions() {
+            fetch('/get-confessions')
+                .then(response => response.json())
+                .then(confessions => {
+                    const confessionList = document.getElementById('confessionList');
+                    confessionList.innerHTML = ''; // Clear current list
+
+                    confessions.forEach(confession => {
+                        const confessionDiv = document.createElement('div');
+                        confessionDiv.classList.add('confession-item');
+                        confessionDiv.innerHTML = `
+                            <strong>From: ${confession.userName}</strong>
+                            <p>${confession.confessionText}</p>
+                            <small>Submitted on: ${new Date(confession.timestamp).toLocaleString()}</small>
+                            <p class="timer" id="timer-${confession.timestamp}">Time left: ${confession.timeLeft.hours}h ${confession.timeLeft.minutes}m ${confession.timeLeft.seconds}s</p>
+                        `;
+                        confessionList.appendChild(confessionDiv);
+
+                        // Start a timer to update the remaining time
+                        startTimer(confession.timestamp, confession.timeLeft);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching confessions:', error);
+                });
+        }
+
+        // Function to update the remaining time every second
+        function startTimer(timestamp, timeLeft) {
+            const timerElement = document.getElementById(`timer-${timestamp}`);
+            const countdownInterval = setInterval(() => {
+                // Decrease time left by 1 second
+                timeLeft.seconds -= 1;
+
+                if (timeLeft.seconds < 0) {
+                    timeLeft.seconds = 59;
+                    timeLeft.minutes -= 1;
+                }
+
+                if (timeLeft.minutes < 0) {
+                    timeLeft.minutes = 59;
+                    timeLeft.hours -= 1;
+                }
+
+                // Update the timer display
+                timerElement.textContent = `Time left: ${timeLeft.hours}h ${timeLeft.minutes}m ${timeLeft.seconds}s`;
+
+                // If the confession is expired, stop the timer
+                if (timeLeft.hours <= 0 && timeLeft.minutes <= 0 && timeLeft.seconds <= 0) {
+                    clearInterval(countdownInterval);
+                    timerElement.textContent = 'Expired';
+                }
+            }, 1000);
+        }
+
+        // Load confessions when the page is loaded
+        window.onload = displayConfessions;
+
+        // Back to home button
+        document.getElementById('backBtn').addEventListener('click', () => {
+            window.location.href = '/';
+        });
+    </script>
+
+</body>
+</html>
