@@ -6,162 +6,83 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Confess to Me</title>
     <style>
-        /* General Styles */
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f7fa;
-            color: #333;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            height: 100vh;
-            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            text-align: center;
+            padding: 20px;
         }
 
         h1 {
             color: #1e90ff;
-            font-size: 2.5rem;
-            margin: 20px 0;
-            text-align: center;
         }
 
-        #confessBtn, #backBtn {
-            background-color: #1e90ff;
-            color: white;
-            padding: 12px 30px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1rem;
+        #confessionList {
             margin-top: 20px;
-            transition: background-color 0.3s ease;
         }
 
-        #confessBtn:hover, #backBtn:hover {
-            background-color: #4682b4;
+        .confession-item {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 10px;
+            border-radius: 8px;
         }
 
-        /* Confession Form Styles */
         .popup {
             display: none;
+            background-color: rgba(0, 0, 0, 0.6);
             position: fixed;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(0, 0, 0, 0.6);
+            width: 100%;
+            height: 100%;
             justify-content: center;
             align-items: center;
-            z-index: 10;
         }
 
         .popup-form {
-            background-color: white;
+            background-color: #fff;
             padding: 20px;
-            border-radius: 10px;
-            width: 100%;
-            max-width: 400px;
+            border-radius: 8px;
             text-align: left;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-            position: relative;
-        }
-
-        .popup-form h3 {
-            font-size: 1.5rem;
-            margin-bottom: 15px;
-            color: #333;
+            width: 300px;
         }
 
         input, textarea, button {
             width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border-radius: 8px;
-            border: 1px solid #ddd;
-        }
-
-        textarea {
-            resize: vertical;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
         }
 
         button {
             background-color: #1e90ff;
             color: white;
             cursor: pointer;
-            transition: background-color 0.3s ease;
         }
 
         button:hover {
             background-color: #4682b4;
         }
 
-        /* Close button for the popup */
-        .close-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            font-size: 24px;
-            background: none;
-            border: none;
-            color: #333;
-            cursor: pointer;
-        }
-
-        /* Confessions List Styles */
-        #confessionList {
-            width: 100%;
-            max-width: 800px;
-            margin-top: 30px;
-            padding: 0 15px;
-        }
-
-        .confession-item {
-            background-color: white;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .confession-item strong {
-            font-size: 1.1rem;
-            color: #1e90ff;
-        }
-
         .timer {
-            font-size: 0.9rem;
+            font-size: 12px;
             color: gray;
         }
 
-        /* Mobile Responsiveness */
-        @media screen and (max-width: 768px) {
-            h1 {
-                font-size: 2rem;
-            }
+        /* Back Button Styles */
+        #backBtn {
+            background-color: #1e90ff;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
 
-            .popup-form {
-                padding: 15px;
-                width: 80%;
-                max-width: 350px;
-            }
-
-            #confessBtn, #backBtn {
-                padding: 10px 25px;
-            }
-
-            .confession-item {
-                padding: 15px;
-            }
-
-            .close-btn {
-                font-size: 22px;
-                top: 10px;
-                right: 10px;
-            }
+        #backBtn:hover {
+            background-color: #4682b4;
         }
     </style>
 </head>
@@ -173,12 +94,10 @@
     <!-- Confession Popup -->
     <div class="popup" id="popupForm">
         <div class="popup-form">
-            <button class="close-btn" id="closePopup">&times;</button>
             <h3>Your Confession</h3>
             <input type="text" id="userName" placeholder="Your Name (Optional)">
             <textarea id="confessionText" placeholder="What do you want to say?" rows="4"></textarea>
             <button id="submitConfession">Submit Confession</button>
-            <p id="confessionLimit" style="color: red;"></p>
         </div>
     </div>
 
@@ -189,28 +108,53 @@
     <button id="backBtn">Back to Home</button>
 
     <script>
-        let confessionsToday = 0; // Track the number of confessions today
-        const maxConfessionsPerDay = 3; // Maximum allowed confessions per day
+        let badWords = [];
+
+        // Function to load bad words from the server (assuming they are stored in a file on the server)
+        function loadBadWords() {
+            fetch('/badwords.txt')
+                .then(response => response.text())
+                .then(data => {
+                    // Split the text by newline and store in the badWords array
+                    badWords = data.split('\n').map(word => word.trim().toLowerCase());
+                })
+                .catch(error => {
+                    console.error('Error loading bad words:', error);
+                });
+        }
+
+        // Load bad words on page load
+        window.onload = () => {
+            loadBadWords();
+            displayConfessions(); // Make sure to load confessions as well
+        };
+
+        // Function to check if text contains bad words (with symbol variations)
+        function containsBadWords(text) {
+            // Normalize and remove accents, then remove non-alphanumeric characters
+            const sanitizedText = text.toLowerCase()
+                                      .normalize('NFD')  // Decompose characters to base and accents
+                                      .replace(/[\u0300-\u036f]/g, '')  // Remove diacritics (accents)
+                                      .replace(/[^a-z0-9]/g, ''); // Remove symbols
+
+            return badWords.some(badWord => sanitizedText.includes(badWord));
+        }
 
         // Show confession form when the button is clicked
         document.getElementById('confessBtn').addEventListener('click', () => {
-            // Check if user has already submitted 3 confessions today
-            if (confessionsToday >= maxConfessionsPerDay) {
-                document.getElementById('confessionLimit').textContent = 'You can only submit 3 confessions per day.';
-            } else {
-                document.getElementById('popupForm').style.display = 'flex';
-            }
-        });
-
-        // Close the popup when the close button is clicked
-        document.getElementById('closePopup').addEventListener('click', () => {
-            document.getElementById('popupForm').style.display = 'none';
+            document.getElementById('popupForm').style.display = 'flex';
         });
 
         // Submit confession and save as a JSON file
         document.getElementById('submitConfession').addEventListener('click', () => {
             const userName = document.getElementById('userName').value || 'Anonymous' + Math.floor(Math.random() * 1000);
             const confessionText = document.getElementById('confessionText').value.trim();
+
+            // Check for bad words before submitting
+            if (containsBadWords(confessionText)) {
+                alert('Sorry, your confession contains inappropriate language. Please try again.');
+                return; // Prevent form submission
+            }
 
             if (confessionText !== '') {
                 const timestamp = new Date().toISOString(); // Get the current timestamp
@@ -233,7 +177,6 @@
                 .then(response => response.json())
                 .then(data => {
                     console.log('Confession saved:', data);
-                    confessionsToday++; // Increment confession count for the day
                     displayConfessions(); // Refresh the confessions list
                 })
                 .catch(error => {
@@ -244,7 +187,6 @@
                 document.getElementById('userName').value = '';
                 document.getElementById('confessionText').value = '';
                 document.getElementById('popupForm').style.display = 'none';
-                document.getElementById('confessionLimit').textContent = ''; // Clear error message
             } else {
                 alert('Please enter a confession.');
             }
@@ -306,8 +248,13 @@
             }, 1000);
         }
 
-        // Load confessions when the page is loaded
-        window.onload = displayConfessions;
+        // Close the popup if clicking outside of the form
+        window.addEventListener('click', (event) => {
+            const popupForm = document.getElementById('popupForm');
+            if (event.target === popupForm) {
+                popupForm.style.display = 'none';
+            }
+        });
 
         // Back to home button
         document.getElementById('backBtn').addEventListener('click', () => {
